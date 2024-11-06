@@ -54,10 +54,11 @@ app.post('/data', async (req, res) => {
     await data.save();
     res.status(201).send('Data saved successfully');
   } catch (err) {
-    console.error('Error saving data:', err);
-    res.status(500).send('Internal server error');
+    console.error('Error saving data:', err);  // This will print the error to Heroku logs
+    res.status(500).send(`Internal server error: ${err.message}`);
   }
 });
+
 
 // Start the server on all interfaces
 app.listen(port, '0.0.0.0', () => {
