@@ -1,3 +1,6 @@
+// Suppress all deprecation warnings globally
+process.env.NODE_OPTIONS = "--no-deprecation";
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -10,6 +13,9 @@ const port = process.env.PORT || 8000;
 // Middleware
 app.use(cors({ origin: '*' }));
 app.use(bodyParser.json());
+
+// Set Mongoose strictQuery option to prepare for Mongoose 7
+mongoose.set('strictQuery', false);
 
 // Connect to MongoDB using environment variable
 const mongoUri = process.env.MONGO_URI;
@@ -54,11 +60,10 @@ app.post('/data', async (req, res) => {
     await data.save();
     res.status(201).send('Data saved successfully');
   } catch (err) {
-    console.error('Error saving data:', err);  // This will print the error to Heroku logs
+    console.error('Error saving data:', err);
     res.status(500).send(`Internal server error: ${err.message}`);
   }
 });
-
 
 // Start the server on all interfaces
 app.listen(port, '0.0.0.0', () => {
